@@ -1,27 +1,68 @@
-import { defineStore } from 'pinia'
+﻿import { defineStore } from 'pinia'
 import { apiRequest } from '../services/api'
 import type { FrameModel, LoadCase, Modulation, RoofType } from '../types'
+
+export type ModulationInput = {
+  name: string
+  orderIndex: number
+  repeatCount: number
+  frameSpacing: number
+}
 
 export const useModelStore = defineStore('model', {
   state: () => ({
     modulation: null as Modulation | null,
+    modulations: [] as Modulation[],
     frame: null as FrameModel | null,
     loadCases: [] as LoadCase[],
     loading: false,
     error: '',
   }),
   actions: {
-    async createModulation(buildingId: string, frameSpacing: number) {
-      this.modulation = await apiRequest<Modulation>(`/buildings/${buildingId}/modulations`, {
-        method: 'POST',
-        body: JSON.stringify({
-          name: 'Modulacao A',
-          orderIndex: 0,
-          repeatCount: 1,
-          frameSpacing,
-        }),
-      })
-      return this.modulation
+    async loadModulations(buildingId: string) {
+      this.loading = true
+      this.error = ''
+      try {
+        const response = await apiRequest<{ modulations: Modulation[] }>(`/buildings/${buildingId}/modulations`)
+        this.modulations = response.modulations
+      } catch {
+        this.error = 'Nao foi possivel carregar as modulacoes.'
+      } finally {
+        this.loading = false
+      }
+    },
+    async loadModulation(modulationId: string) {
+      this.loading = true
+      this.error = ''
+      try {
+        const response = await apiRequest<Modulation>(`/modulations/${modulationId}`)
+        this.modulation = response
+        this.frame = response.frames[0] ?? null
+        return response
+      } catch {
+        this.error = 'Nao foi possivel carregar a modulacao.'
+        throw new Error(this.error)
+      } finally {
+        this.loading = false
+      }
+    },
+    async createModulation(buildingId: string, input: ModulationInput) {
+      this.loading = true
+      this.error = ''
+      try {
+        const modulation = await apiRequest<Modulation>(`/buildings/${buildingId}/modulations`, {
+          method: 'POST',
+          body: JSON.stringify(input),
+        })
+        this.modulation = modulation
+        this.modulations = [...this.modulations, modulation].sort((a, b) => a.orderIndex - b.orderIndex)
+        return modulation
+      } catch {
+        this.error = 'Nao foi possivel criar a modulacao.'
+        throw new Error(this.error)
+      } finally {
+        this.loading = false
+      }
     },
     async generateFrame(input: {
       modulationId: string
@@ -52,6 +93,9 @@ export const useModelStore = defineStore('model', {
             roofType: input.roofType,
           }),
         })
+        if (this.modulation) {
+          this.modulation = { ...this.modulation, frames: [this.frame, ...this.modulation.frames] }
+        }
         return this.frame
       } catch (error) {
         this.error = 'Nao foi possivel gerar o portico.'

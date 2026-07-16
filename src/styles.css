@@ -113,3 +113,15 @@ pre { overflow: auto; background: #0f172a; color: #dbeafe; padding: 14px; border
   .split { grid-template-columns: 1fr; }
   .page-header { display: grid; }
 }
+.frame-card { display: grid; gap: 12px; }
+.frame-card dl { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 0; }
+.frame-card dt { color: #64748b; font-size: 12px; }
+.frame-card dd { margin: 0; font-weight: 700; }
+.metric { font-size: 26px; font-weight: 800; margin: 0; }
+.wide-split { grid-template-columns: minmax(320px, 420px) minmax(0, 1fr); }
+.building-viewer-3d { width: 100%; min-height: 520px; border: 1px solid #d9e2ec; border-radius: 8px; background: #fbfdff; overflow: hidden; }
+.building-viewer-3d canvas { display: block; width: 100%; height: 100%; }
+@media (max-width: 860px) {
+  .frame-card dl { grid-template-columns: 1fr; }
+  .building-viewer-3d { min-height: 360px; }
+}

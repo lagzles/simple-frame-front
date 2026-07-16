@@ -1,13 +1,9 @@
 import { defineStore } from 'pinia'
 import { apiRequest } from '../services/api'
-import type { Building, RoofType } from '../types'
+import type { Building } from '../types'
 
 export type BuildingInput = {
   name: string
-  frameSpacing: number
-  frameCount: number
-  freeHeight: number
-  roofType: RoofType
   roofSlopePercent: number
 }
 

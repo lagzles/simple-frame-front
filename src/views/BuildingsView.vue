@@ -1,8 +1,8 @@
-<template>
+﻿<template>
   <AppLayout>
-    <AppPageHeader title="Prédios" subtitle="Galpões vinculados ao usuário autenticado.">
+    <AppPageHeader title="PrÃ©dios" subtitle="GalpÃµes vinculados ao usuÃ¡rio autenticado.">
       <template #actions>
-        <AppButton @click="showForm = !showForm">{{ showForm ? 'Fechar' : 'Novo prédio' }}</AppButton>
+        <AppButton @click="showForm = !showForm">{{ showForm ? 'Fechar' : 'Novo prÃ©dio' }}</AppButton>
       </template>
     </AppPageHeader>
 
@@ -11,7 +11,7 @@
     </AppCard>
 
     <AppAlert v-if="buildings.error" variant="danger" :message="buildings.error" />
-    <AppEmptyState v-if="!buildings.loading && !buildings.buildings.length" title="Nenhum prédio criado" message="Crie o primeiro galpão para iniciar a modelagem." />
+    <AppEmptyState v-if="!buildings.loading && !buildings.buildings.length" title="Nenhum prÃ©dio criado" message="Crie o primeiro galpÃ£o para iniciar a modelagem." />
 
     <div class="grid-list">
       <BuildingCard v-for="building in buildings.buildings" :key="building.id" :building="building" @open="open" />
@@ -42,11 +42,13 @@ onMounted(() => buildings.loadBuildings())
 async function create(input: BuildingInput) {
   const building = await buildings.createBuilding(input)
   showForm.value = false
-  await router.push(`/buildings/${building.id}/model`)
+  await router.push(`/buildings/${building.id}/modulations`)
 }
 
 async function open(building: Building) {
   buildings.current = building
-  await router.push(`/buildings/${building.id}/model`)
+  await router.push(`/buildings/${building.id}/modulations`)
 }
 </script>
+
+

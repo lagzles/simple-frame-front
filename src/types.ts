@@ -1,4 +1,4 @@
-export type User = {
+﻿export type User = {
   id: string
   email: string
 }
@@ -8,11 +8,9 @@ export type RoofType = 'single_slope' | 'double_slope'
 export type Building = {
   id: string
   name: string
-  frameSpacing: number
-  frameCount: number
-  freeHeight: number
-  roofType: RoofType
   roofSlopePercent: number
+  modulationCount: number
+  modulations: Modulation[]
   createdAt: string
   updatedAt: string
 }
@@ -24,6 +22,9 @@ export type Modulation = {
   orderIndex: number
   repeatCount: number
   frameSpacing: number
+  frames: FrameModel[]
+  createdAt: string
+  updatedAt: string
 }
 
 export type FrameNode = {
@@ -43,6 +44,17 @@ export type FrameMember = {
 
 export type FrameModel = {
   frameId: string
+  name: string
+  spanList: number[]
+  freeHeight: number
+  ridgeX: number | null
+  roofSlopePercent: number
+  influenceWidth: number
+  minimumWebHeight: number | null
+  hasSteelColumns: boolean
+  roofType: RoofType
+  createdAt: string
+  updatedAt: string
   nodes: FrameNode[]
   members: FrameMember[]
 }
